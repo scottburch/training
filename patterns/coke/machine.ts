@@ -1,26 +1,40 @@
-import {Left, Right} from "monet";
+import {Left, Right, Some} from "monet";
 import delay from 'delay'
+import {passThrough} from "promise-passthrough";
 
-interface Machine {
+export interface Machine {
     state: MachineState
     coins: number
     price: number
     display: (str: string) => void
 }
 
-interface MachineState {
+export const newMachine = (options: Partial<Machine> = {}): Machine =>
+    Some({
+        state: {} as MachineState,
+        coins: 0,
+        price: 1,
+        display: (str: string) => console.log(str),
+            ...options
+    })
+        .map(passThrough(idleState))
+        .join();
+
+
+
+export interface MachineState {
     insertCoin: (amt: number) => void
     selectProduct: (prod: string) => void
 }
 
-const idleState = (machine: Machine) => {
+export const idleState = (machine: Machine) => {
     machine.display('insert coins');
     machine.state = {
         insertCoin: (amt) =>
             Right(amt)
                 .map(amt => machine.coins += amt)
-                .flatMap(amt => amt > machine.price ? Right(amt) : Left(amt))
-                .map(() => giveChange(machine))
+                .flatMap(amt => amt >= machine.price ? Right(amt) : Left(amt))
+                .map(amt => amt === machine.price ? vend(machine) : giveChange(machine))
                 .leftMap(() => machine.display(`remaining: ${(machine.price - machine.coins).toFixed(2)}`)),
 
         selectProduct: () => machine.display('insert coins')
@@ -28,7 +42,7 @@ const idleState = (machine: Machine) => {
 };
 
 
-const giveChange = (machine: Machine) => {
+export const giveChange = (machine: Machine) => {
     machine.display(`change: ${(machine.coins - machine.price).toFixed(2)}`);
     machine.state = {
         insertCoin: () => machine.display('no more coins allowed'),
@@ -50,24 +64,4 @@ const vend = (machine: Machine) => {
     }
 }
 
-const machine: Machine = {
-    state: {} as MachineState,
-    coins: 0,
-    price: 1,
-    display: (str: string) => console.log(str)
-}
-
-idleState(machine);
-
-
-process.stdin.setRawMode(true);
-process.stdin.resume();
-process.stdin.on('data', (buf) => cmds[buf.toString()]());
-
-
-const cmds: Record<string, () => void> = {
-    1: () => machine.state.insertCoin(.10),
-    2: () => machine.state.insertCoin(.50),
-    3: () => machine.state.selectProduct('coke')
-}
 
