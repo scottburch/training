@@ -3,7 +3,7 @@ import delay from 'delay'
 import {passThrough} from "promise-passthrough";
 
 export interface Machine {
-    state: MachineState
+    behaviour: MachineBehaviour
     coins: number
     price: number
     display: (str: string) => void
@@ -11,25 +11,24 @@ export interface Machine {
 
 export const newMachine = (options: Partial<Machine> = {}): Machine =>
     Some({
-        state: {} as MachineState,
+        behaviour: {} as MachineBehaviour,
         coins: 0,
         price: 1,
-        display: (str: string) => console.log(str),
-            ...options
+        display: () => {},
+        ...options
     })
         .map(passThrough(idleState))
         .join();
 
 
-
-export interface MachineState {
+export interface MachineBehaviour {
     insertCoin: (amt: number) => void
     selectProduct: (prod: string) => void
 }
 
 export const idleState = (machine: Machine) => {
     machine.display('insert coins');
-    machine.state = {
+    machine.behaviour = {
         insertCoin: (amt) =>
             Right(amt)
                 .map(amt => machine.coins += amt)
@@ -44,7 +43,7 @@ export const idleState = (machine: Machine) => {
 
 export const giveChange = (machine: Machine) => {
     machine.display(`change: ${(machine.coins - machine.price).toFixed(2)}`);
-    machine.state = {
+    machine.behaviour = {
         insertCoin: () => machine.display('no more coins allowed'),
         selectProduct: () => machine.display('wait for change')
     }
@@ -54,7 +53,7 @@ export const giveChange = (machine: Machine) => {
 
 const vend = (machine: Machine) => {
     machine.display('make selection');
-    machine.state = {
+    machine.behaviour = {
         insertCoin: () => machine.display('no more coins allowed'),
         selectProduct: () => {
             machine.display('dispensing product')

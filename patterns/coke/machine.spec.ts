@@ -16,8 +16,8 @@ describe('coke machine', () => {
    );
 
     it('should not not make change if the amount inserted is equal to price', () => {
-        machine.state.insertCoin(.50);
-        machine.state.insertCoin(.50);
+        machine.behaviour.insertCoin(.50);
+        machine.behaviour.insertCoin(.50);
         expect(displaySpy).to.have.been.calledThrice;
         expect(displaySpy).to.have.been.calledWithMatch(/insert/)
         expect(displaySpy).to.have.been.calledWithMatch(/remaining: 0.50/);
@@ -25,9 +25,9 @@ describe('coke machine', () => {
     });
 
     it('should make change if the amount inserted is higher than the price', () => {
-        machine.state.insertCoin(.10);
-        machine.state.insertCoin(.50);
-        machine.state.insertCoin(.50);
+        machine.behaviour.insertCoin(.10);
+        machine.behaviour.insertCoin(.50);
+        machine.behaviour.insertCoin(.50);
         expect(displaySpy.callCount).to.equal(4);
         expect(displaySpy).to.have.been.calledWith('change: 0.10')
     })
