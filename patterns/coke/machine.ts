@@ -9,6 +9,12 @@ export interface Machine {
     display: (str: string) => void
 }
 
+export interface MachineBehaviour {
+    insertCoin: (amt: number) => void
+    selectProduct: (prod: string) => void
+}
+
+
 export const newMachine = (options: Partial<Machine> = {}): Machine =>
     Some({
         behaviour: {} as MachineBehaviour,
@@ -17,17 +23,14 @@ export const newMachine = (options: Partial<Machine> = {}): Machine =>
         display: () => {},
         ...options
     })
-        .map(passThrough(idleState))
+        .map(passThrough(idle))
         .join();
 
 
-export interface MachineBehaviour {
-    insertCoin: (amt: number) => void
-    selectProduct: (prod: string) => void
-}
 
-export const idleState = (machine: Machine) => {
+export const idle = (machine: Machine) => {
     machine.display('insert coins');
+    machine.coins = 0;
     machine.behaviour = {
         insertCoin: (amt) =>
             Right(amt)
@@ -58,7 +61,7 @@ const vend = (machine: Machine) => {
         selectProduct: () => {
             machine.display('dispensing product')
             delay(3000)
-                .then(() => idleState(machine))
+                .then(() => idle(machine))
         }
     }
 }
