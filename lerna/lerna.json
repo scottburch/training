@@ -1,0 +1,9 @@
+{
+  "packages": [
+    "module1",
+    "group/module2",
+    "group/module3"
+  ],
+  "version": "0.0.0",
+  "npmClient": "yarn"
+}
