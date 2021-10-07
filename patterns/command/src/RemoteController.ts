@@ -1,15 +1,19 @@
 import {Some} from "monet";
-import {newRemote, remoteAddCmd, remotePressKey} from "./Remote";
+import {newRemote, remoteAddCmd, RemoteCmd, remotePressKey} from "./Remote";
+import {memoize} from "lodash";
 
-const remote = newRemote();
-
-Some(remote)
-    .map(remoteAddCmd(0, () => alert('button 0 pressed')))
-    .map(remoteAddCmd(1, () => alert('button 1 pressed')));
-
+const getRemote = memoize(() => Some(newRemote()));
 
 Some(document)
     .map(document => document.querySelectorAll('button'))
     .forEach(btns =>
-        btns.forEach((btn, idx) => btn.addEventListener('click', () => remotePressKey(idx)(remote)))
-    )
+        btns.forEach((btn, idx) =>
+            btn.addEventListener('click', () =>
+                getRemote().forEach(remotePressKey(idx))
+            )
+        )
+    );
+
+(global as any).assignCmd = (btn: number, cmd: RemoteCmd) =>
+    getRemote()
+        .forEach(remoteAddCmd(btn, cmd));
