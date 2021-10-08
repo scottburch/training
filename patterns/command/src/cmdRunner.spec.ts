@@ -1,6 +1,6 @@
 import chai, {expect} from "chai";
 import sinon from 'sinon-chai'
-import {newCmdRunner, runCommand} from "./cmdRunner";
+import {newCmdRunner, redoCommand, runCommand, undoCommand} from "./cmdRunner";
 import {Some} from "monet";
 import {spy} from 'sinon'
 
@@ -24,10 +24,22 @@ describe('command runner', () => {
 
         Some(newCmdRunner())
             .map(runCommand(cmdSpy, undoSpy))
-//            .forEach(undoCommand);
+            .forEach(undoCommand);
 
         expect(cmdSpy).to.have.been.called;
         expect(undoSpy).to.have.been.called;
     });
 
-})
+    it('should allow you to run a redo command', () => {
+        const cmdSpy = spy()
+        const undoSpy = spy()
+
+        Some(newCmdRunner())
+            .map(runCommand(cmdSpy, undoSpy))
+            .map(undoCommand)
+            .map(redoCommand)
+        expect(undoSpy).to.have.been.called
+        expect(cmdSpy).to.have.been.calledTwice
+    });
+
+});

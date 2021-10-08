@@ -1,14 +1,6 @@
 import {curry} from "lodash";
-import {List as LinkedList, Item as Item} from 'linked-list'
-import {Some} from "monet";
-
-export const newCmdRunner =  (): CmdRunner =>
-    Some(new LinkedList())
-        .map(list => ({
-            cmds: list,
-            ptr: undefined
-        }))
-        .join();
+import {addListNode, DoubleLinkedListNode} from "./doubleLinkedList";
+import {Maybe} from "monet";
 
 interface ListItem {
     cmd: Cmd,
@@ -16,15 +8,34 @@ interface ListItem {
 }
 
 interface CmdRunner {
-    ptr: Item
-    cmds: LinkedList<ListItem>
+    ptr?: DoubleLinkedListNode<ListItem>
 }
 type Cmd = () => void;
 
+export const newCmdRunner = () => ({ptr: undefined} as CmdRunner)
+
 export const runCommand = curry((cmd: Cmd, undoCmd: Cmd, runner: CmdRunner): CmdRunner => {
     cmd();
+    runner.ptr = addListNode({cmd, undoCmd}, runner.ptr);
     return runner;
 });
 
-//export const undoCommand = (runner: CmdRunner) =>
+export const undoCommand = (runner: CmdRunner): CmdRunner => {
+    Maybe.fromUndefined(runner.ptr)
+    runner.ptr?.data.undoCmd();
 
+    Maybe.fromUndefined(runner.ptr?.prev)
+        .forEach(node => runner.ptr = node);
+
+    return runner;
+}
+
+export const redoCommand = (runner: CmdRunner): CmdRunner => {
+    Maybe.fromUndefined(runner.ptr?.next)
+        .forEach(node => {
+            node.data.cmd();
+            runner.ptr = node;
+        });
+
+    return runner;
+}
