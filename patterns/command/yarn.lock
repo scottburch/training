@@ -1115,11 +1115,6 @@ assert-plus@1.0.0, assert-plus@^1.0.0:
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
   integrity sha1-8S4PPF13sLHN2RRpQuTpbB5N1SU=
 
-assert-testing@^1.0.8:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/assert-testing/-/assert-testing-1.0.9.tgz#6bd6444c78e856055920906462a13d09b801d8cb"
-  integrity sha512-ZMSq+xgejoK8u8aRXdQyAOm4vLekkMcDU7zEMiZouNuH8NAgvBIh3G9sNqT8vgeXyFb2cli8X5YwuimFb3LMug==
-
 assert@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/assert/-/assert-2.0.0.tgz#95fc1c616d48713510680f2eaf2d10dd22e02d32"
@@ -3368,6 +3363,11 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
+linked-list@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/linked-list/-/linked-list-3.0.1.tgz#4efa6fa9764571e6bd10b6d2d584c3e5678391ab"
+  integrity sha512-SZQtR4X1ytETq5AUUHmB0b4HuekzdfowzWXCBrd1GUPzeUx3zAdDE4j+M/IEFKaazkfOSBRcPzl7dFA9EZtmHA==
+
 lmdb-store@^1.5.5:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/lmdb-store/-/lmdb-store-1.6.8.tgz#f57c1fa4a8e8e7a73d58523d2bfbcee96782311f"
@@ -4815,13 +4815,6 @@ signal-exit@^3.0.2:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.5.tgz#9e3e8cc0c75a99472b44321033a7702e7738252f"
   integrity sha512-KWcOiKeQj6ZyXx7zq4YxSMgHRlod4czeBQZrPb8OKcohcqAXShm7E20kEMle9WBt26hFcAf0qLOcp5zmY7kOqQ==
-
-simple-double-linked-list@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/simple-double-linked-list/-/simple-double-linked-list-1.0.3.tgz#41f222801014b7b4cc6b9194eb7a2969c0677e71"
-  integrity sha512-03xeVMP3YkEUwzpapgfBlkm7NhkORKAylv2Iuln15ps3ctC783FDkY9S3ER3fdhsZJ5Uf8LCR6JGeBF9w1pnsQ==
-  dependencies:
-    assert-testing "^1.0.8"
 
 sinon-chai@^3.7.0:
   version "3.7.0"
