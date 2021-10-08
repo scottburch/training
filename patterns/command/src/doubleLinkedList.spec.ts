@@ -30,6 +30,6 @@ describe('doubly linked list', () => {
     it('should be able to get the next item on the list from a node', () => {
         Some(addListNode(1))
             .map(prev => addListNode(2, prev))
-            .forEach(node => expect(node.prev?.next.data).to.equal(2))
+            .forEach(node => expect(node.prev?.next?.data).to.equal(2))
     });
 });

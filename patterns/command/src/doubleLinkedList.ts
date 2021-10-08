@@ -4,7 +4,7 @@ import {passThrough} from "promise-passthrough";
 export interface DoubleLinkedListNode<T> {
     length: number
     prev: DoubleLinkedListNode<T> | undefined
-    next: DoubleLinkedListNode<T>
+    next: DoubleLinkedListNode<T> | undefined
     data: T
 }
 
