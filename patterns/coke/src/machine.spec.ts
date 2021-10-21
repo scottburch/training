@@ -57,7 +57,8 @@ describe('coke machine', () => {
             .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/make selection/)))
             .then(insertCoin(.50))
             .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/no more coins/))
-    )
+    );
+
 });
 
 const getDisplaySpy: () => DisplayFn = () => spy();

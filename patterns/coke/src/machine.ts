@@ -25,11 +25,11 @@ export type StateFn = (machine: Machine) => Machine;
 
 export const getMaxPrice = (machine: Machine) => machine.products.reduce((max, product) => {
     return product.price > max ? product.price : max
-},0);
+}, 0);
 
 export const getMinPrice = (machine: Machine) => machine.products.reduce((min, product) => {
     return product.price < min ? product.price : min
-},Number.MAX_SAFE_INTEGER);
+}, Number.MAX_SAFE_INTEGER);
 
 export const insertCoin = curry((amt: number, machine: Machine) => machine.state.insertCoin(amt))
 
@@ -62,5 +62,23 @@ export const idleState: StateFn = (machine) => {
 
 export const pastMinimumState: StateFn = (machine) => {
     machine.display('make selection or insert coins');
+    machine.state = {
+        insertCoin: amt => {
+            machine.coins += amt;
+            machine.display(`inserted: ${machine.coins.toFixed(2)}`)
+            setTimeout(() => machine.display('make selection or insert coins'), 2000)
+            return isPastMaximumPrice(machine) ? pastMaximumState(machine) : machine;
+        }
+    }
+    return machine;
+}
+
+export const pastMaximumState: StateFn = (machine) => {
+    machine.state = {
+        insertCoin: () => {
+            machine.display('no more coins')
+            return machine;
+        }
+    }
     return machine;
 }
