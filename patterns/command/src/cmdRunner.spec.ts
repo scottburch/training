@@ -36,10 +36,11 @@ describe('command runner', () => {
 
         Some(newCmdRunner())
             .map(runCommand(cmdSpy, undoSpy))
+            .map(runCommand(cmdSpy, undoSpy))
             .map(undoCommand)
             .map(redoCommand)
         expect(undoSpy).to.have.been.called
-        expect(cmdSpy).to.have.been.calledTwice
+        expect(cmdSpy).to.have.been.calledThrice
     });
 
 });

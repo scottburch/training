@@ -21,12 +21,8 @@ export const runCommand = curry((cmd: Cmd, undoCmd: Cmd, runner: CmdRunner): Cmd
 });
 
 export const undoCommand = (runner: CmdRunner): CmdRunner => {
-    Maybe.fromUndefined(runner.ptr)
     runner.ptr?.data.undoCmd();
-
-    Maybe.fromUndefined(runner.ptr?.prev)
-        .forEach(node => runner.ptr = node);
-
+    runner.ptr = runner.ptr?.prev
     return runner;
 }
 
