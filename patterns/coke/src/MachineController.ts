@@ -3,17 +3,15 @@ import {Some} from "monet";
 
 const display: DisplayFn = (str) => document.querySelector('#display')?.setAttribute('value', str);
 
-
-const products: Product[] = [{
-    name: 'Coke',
-    price: 1.25
-}, {
-    name: 'Chips',
-    price: 2.50
-}];
+const getProducts = (): Product[] =>
+    Array.from(document.querySelectorAll('[data-price]'))
+        .map(el => {
+            el.innerHTML = `${el.id} - ${el.getAttribute('data-price')}`
+            return {name: el.id, price: parseFloat(el.getAttribute('data-price') || '0')}
+        })
 
 
-Some(newMachine({display,products}))
+Some(newMachine({display, products: getProducts()}))
     .forEach(machine => {
         document.querySelector('#nickle')?.addEventListener('click', () => insertCoin(0.05, machine))
         document.querySelector('#dime')?.addEventListener('click', () => insertCoin(0.10, machine))

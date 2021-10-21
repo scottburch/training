@@ -45,7 +45,7 @@ const isPastMinimumPrice = (machine: Machine): boolean =>
     machine.coins >= getMinPrice(machine);
 
 const isPastMaximumPrice = (machine: Machine): boolean =>
-    machine.coins > getMaxPrice(machine);
+    machine.coins >= getMaxPrice(machine);
 
 export const idleState: StateFn = (machine) => {
     machine.display('insert coins');
@@ -66,7 +66,7 @@ export const pastMinimumState: StateFn = (machine) => {
         insertCoin: amt => {
             machine.coins += amt;
             machine.display(`inserted: ${machine.coins.toFixed(2)}`)
-            setTimeout(() => machine.display('make selection or insert coins'), 2000)
+            if (!isPastMaximumPrice(machine)) setTimeout(() => machine.display('make selection or insert coins'), 1000)
             return isPastMaximumPrice(machine) ? pastMaximumState(machine) : machine;
         }
     }
@@ -74,9 +74,11 @@ export const pastMinimumState: StateFn = (machine) => {
 }
 
 export const pastMaximumState: StateFn = (machine) => {
+    machine.display(`inserted: ${machine.coins.toFixed(2)}`)
+    setTimeout(() => machine.display('make selection'), 1000)
     machine.state = {
         insertCoin: () => {
-            machine.display('no more coins')
+            machine.display('make selection')
             return machine;
         }
     }

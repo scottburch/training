@@ -56,7 +56,7 @@ describe('coke machine', () => {
             .then(insertCoin(.75))
             .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/make selection/)))
             .then(insertCoin(.50))
-            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/no more coins/))
+            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/make selection/))
     );
 
 });
