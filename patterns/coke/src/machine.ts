@@ -1,6 +1,3 @@
-import {Left, Right, Some} from "monet";
-import delay from 'delay'
-import {passThrough} from "promise-passthrough";
 import {curry} from 'lodash/fp'
 
 
@@ -20,7 +17,7 @@ export interface Machine {
     display: DisplayFn;
 }
 
-export type DisplayFn = (str: string) => void;
+export type DisplayFn = (str: string[]) => void;
 export type StateFn = (machine: Machine) => Machine;
 
 export const getMaxPrice = (machine: Machine) => machine.products.reduce((max, product) => {
@@ -48,12 +45,12 @@ const isPastMaximumPrice = (machine: Machine): boolean =>
     machine.coins >= getMaxPrice(machine);
 
 export const idleState: StateFn = (machine) => {
-    machine.display('insert coins');
+    machine.display(['insert coins']);
     machine.coins = 0;
     machine.state = {
         insertCoin: amt => {
             machine.coins += amt;
-            machine.display(`inserted: ${machine.coins.toFixed(2)}`);
+            machine.display([`inserted: ${machine.coins.toFixed(2)}`]);
             return isPastMinimumPrice(machine) ? pastMinimumState(machine) : machine;
         }
     }
@@ -61,12 +58,14 @@ export const idleState: StateFn = (machine) => {
 }
 
 export const pastMinimumState: StateFn = (machine) => {
-    machine.display('make selection or insert coins');
+    machine.display([
+        `inserted: ${machine.coins.toFixed(2)}`,
+        isPastMinimumPrice(machine) ? 'make selection or insert coins' : ''
+    ]);
     machine.state = {
         insertCoin: amt => {
             machine.coins += amt;
-            machine.display(`inserted: ${machine.coins.toFixed(2)}`)
-            if (!isPastMaximumPrice(machine)) setTimeout(() => machine.display('make selection or insert coins'), 1000)
+            machine.display([`inserted: ${machine.coins.toFixed(2)}`, 'make selection or insert coins'])
             return isPastMaximumPrice(machine) ? pastMaximumState(machine) : machine;
         }
     }
@@ -74,13 +73,9 @@ export const pastMinimumState: StateFn = (machine) => {
 }
 
 export const pastMaximumState: StateFn = (machine) => {
-    machine.display(`inserted: ${machine.coins.toFixed(2)}`)
-    setTimeout(() => machine.display('make selection'), 1000)
+    machine.display([`inserted: ${machine.coins.toFixed(2)}`, 'make selection'])
     machine.state = {
-        insertCoin: () => {
-            machine.display('make selection')
-            return machine;
-        }
+        insertCoin: () => machine
     }
     return machine;
 }

@@ -1,8 +1,7 @@
-import {SinonSpy, spy} from 'sinon'
+import {spy} from 'sinon'
 import sinonChai from 'sinon-chai'
 import chai, {expect} from 'chai'
 import {DisplayFn, insertCoin, Machine, newMachine, Product} from "./machine";
-import {Some} from "monet";
 import {passThrough} from "promise-passthrough";
 
 chai.use(sinonChai);
@@ -17,7 +16,7 @@ describe('coke machine', () => {
             products,
             display: getDisplaySpy()
         }))
-            .then(machine => expect(machine.display).to.be.calledWithMatch(/insert coins/))
+            .then(machine => expect(machine.display).to.be.calledWithMatch(['insert coins']))
     );
 
     it('should increment amount entered when you insert coins', () =>
@@ -26,7 +25,7 @@ describe('coke machine', () => {
             display: getDisplaySpy()
         }))
             .then(insertCoin(.25))
-            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/inserted: 0.25/))
+            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(['inserted: 0.25']))
     );
 
     it('should ask for selection when you have put in enough coins to cover the minimum product price', () =>
@@ -35,13 +34,13 @@ describe('coke machine', () => {
             display: getDisplaySpy()
         }))
             .then(insertCoin(.25))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/0.25/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 0.25'])))
             .then(insertCoin(.25))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/0.50/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 0.50'])))
             .then(insertCoin(.25))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/0.75/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 0.75'])))
             .then(insertCoin(.50))
-            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/make selection or insert coins/))
+            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(['inserted: 1.25', 'make selection or insert coins']))
     );
 
     it('should allow you to insert coins up to the max product price only', () =>
@@ -50,13 +49,13 @@ describe('coke machine', () => {
             display: getDisplaySpy()
         }))
             .then(insertCoin(1))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/1.00/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 1.00'])))
             .then(insertCoin(1))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/make selection/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 2.00', 'make selection or insert coins'])))
             .then(insertCoin(.75))
-            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(/make selection/)))
+            .then(passThrough(machine => expect(machine.display).to.have.been.calledWithMatch(['inserted: 2.75', 'make selection or insert coins'])))
             .then(insertCoin(.50))
-            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(/make selection/))
+            .then(machine =>  expect(machine.display).to.have.been.calledWithMatch(['inserted: 2.75', 'make selection']))
     );
 
 });

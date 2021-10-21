@@ -1,7 +1,10 @@
 import {DisplayFn, insertCoin, newMachine, Product} from "./machine";
 import {Some} from "monet";
 
-const display: DisplayFn = (str) => document.querySelector('#display')?.setAttribute('value', str);
+const display: DisplayFn = (str) => [0,1].forEach(n =>
+    document.querySelector(`#display${n}`)?.setAttribute('value', str[n])
+)
+
 
 const getProducts = (): Product[] =>
     Array.from(document.querySelectorAll('[data-price]'))

@@ -461,7 +461,11 @@ function hmrAcceptRun(bundle, id) {
 },{}],"4mwdg":[function(require,module,exports) {
 var _machine = require("./machine");
 var _monet = require("monet");
-const display = (str)=>document.querySelector('#display')?.setAttribute('value', str)
+const display = (str)=>[
+        0,
+        1
+    ].forEach((n)=>document.querySelector(`#display${n}`)?.setAttribute('value', str[n])
+    )
 ;
 const getProducts = ()=>Array.from(document.querySelectorAll('[data-price]')).map((el)=>{
         el.innerHTML = `${el.id} - ${el.getAttribute('data-price')}`;
@@ -523,39 +527,45 @@ const isPastMinimumPrice = (machine)=>machine.coins >= getMinPrice(machine)
 const isPastMaximumPrice = (machine)=>machine.coins >= getMaxPrice(machine)
 ;
 const idleState = (machine)=>{
-    machine.display('insert coins');
+    machine.display([
+        'insert coins'
+    ]);
     machine.coins = 0;
     machine.state = {
         insertCoin: (amt)=>{
             machine.coins += amt;
-            machine.display(`inserted: ${machine.coins.toFixed(2)}`);
+            machine.display([
+                `inserted: ${machine.coins.toFixed(2)}`
+            ]);
             return isPastMinimumPrice(machine) ? pastMinimumState(machine) : machine;
         }
     };
     return machine;
 };
 const pastMinimumState = (machine)=>{
-    machine.display('make selection or insert coins');
+    machine.display([
+        `inserted: ${machine.coins.toFixed(2)}`,
+        isPastMinimumPrice(machine) ? 'make selection or insert coins' : ''
+    ]);
     machine.state = {
         insertCoin: (amt)=>{
             machine.coins += amt;
-            machine.display(`inserted: ${machine.coins.toFixed(2)}`);
-            if (!isPastMaximumPrice(machine)) setTimeout(()=>machine.display('make selection or insert coins')
-            , 1000);
+            machine.display([
+                `inserted: ${machine.coins.toFixed(2)}`,
+                'make selection or insert coins'
+            ]);
             return isPastMaximumPrice(machine) ? pastMaximumState(machine) : machine;
         }
     };
     return machine;
 };
 const pastMaximumState = (machine)=>{
-    machine.display(`inserted: ${machine.coins.toFixed(2)}`);
-    setTimeout(()=>machine.display('make selection')
-    , 1000);
+    machine.display([
+        `inserted: ${machine.coins.toFixed(2)}`,
+        'make selection'
+    ]);
     machine.state = {
-        insertCoin: ()=>{
-            machine.display('make selection');
-            return machine;
-        }
+        insertCoin: ()=>machine
     };
     return machine;
 };
